@@ -1,6 +1,5 @@
--- 16 rows
--- 10 columns
-local shapes = require('shapes')
+local shapes = require 'shapes'
+
 local current_shape = shapes[1]
 local orientation = 1
 local board = {}
@@ -29,6 +28,7 @@ local function rotate_shape()
 end
 
 love.keyboard.setKeyRepeat(true)
+
 function love.keypressed(key)
   if key == 'up' then
     rotate_shape()
@@ -49,19 +49,27 @@ function love.update(dt)
   end
 end
 
-local function draw_current_shape()
+local function each_shape_block(fn)
   for row_index, row in ipairs(current_shape[orientation]) do
     for column_index, column in ipairs(row) do
       if column == 1 then
-        love.graphics.rectangle(
-          'fill',
-          (column_index - 1 + left) * 10,
-          (row_index - 1 + top) * 10,
-          9,
-          9)
+        local x = column_index + left
+        local y = row_index + top
+        fn(x, y)
       end
     end
   end
+end
+
+local function draw_current_shape()
+  each_shape_block(function(x, y)
+    love.graphics.rectangle(
+      'fill',
+      x * 10,
+      y * 10,
+      9,
+      9)
+  end)
 end
 
 local function draw_board()
