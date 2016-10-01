@@ -72,6 +72,15 @@ local function draw_current_shape()
   end)
 end
 
+local function draw_boundaries()
+  love.graphics.rectangle(
+    'line',
+    9,
+    9,
+    100,
+    160)
+end
+
 local function draw_board()
   for row_index, row in ipairs(board) do
     for column_index, column in ipairs(row) do
@@ -88,6 +97,7 @@ local function draw_board()
 end
 
 function love.draw()
+  draw_boundaries()
   draw_current_shape()
   draw_board()
 end
