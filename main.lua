@@ -1,6 +1,5 @@
 local Shape = require 'shape'
 
-local shape = Shape()
 local board = {}
 local drop_timer = 0
 
@@ -10,6 +9,8 @@ for row = 1, 16 do
     board[row][column] = 0
   end
 end
+
+local shape = Shape(board)
 
 function love.load()
   love.window.setMode(400, 520)
