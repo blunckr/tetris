@@ -76,7 +76,7 @@ function Shape.drop(self)
   if self:next_position_valid{top=next_top} then
     self.top = next_top
   else
-    self.board.eat()
+    self.board:eat()
   end
 end
 

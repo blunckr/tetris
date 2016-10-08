@@ -1,7 +1,7 @@
 local Shape = require 'shape'
 local Board = require 'board'
 
-local board = Board()
+local board = Board.new()
 local drop_timer = 0
 
 local shape = Shape.new(board)
@@ -33,6 +33,6 @@ function love.update(dt)
 end
 
 function love.draw()
-  board.draw()
+  board:draw()
   shape:draw()
 end
