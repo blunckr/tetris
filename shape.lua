@@ -31,7 +31,12 @@ return function(board)
   local function next_position_valid(shape_params)
     local valid = true
     each_block(function(x, y)
-      if x < 1 or x > #board.grid[1] or board.grid[y][x] == 1 then
+      if
+        x < 1 or
+        x > #board.grid[1] or
+        y > #board.grid or
+        board.grid[y][x] == 1
+      then
         valid = false
       end
     end, shape_params)
@@ -39,11 +44,14 @@ return function(board)
   end
 
   local function rotate(reverse)
-    orientation = orientation + (reverse and -1 or 1)
-    if orientation > 4 then
-      orientation = 1
-    elseif orientation < 1 then
-      orientation = 4
+    local next_orientation = orientation + (reverse and -1 or 1)
+    if next_orientation > 4 then
+      next_orientation = 1
+    elseif next_orientation < 1 then
+      next_orientation = 4
+    end
+    if next_position_valid{orientation=next_orientation} then
+      orientation = next_orientation
     end
   end
 
@@ -55,7 +63,12 @@ return function(board)
   end
 
   local function drop()
-    top = top + 1
+    local next_top = top + 1
+    if next_position_valid{top=next_top} then
+      top = next_top
+    else
+      board.eat()
+    end
   end
 
   local function draw()
@@ -70,10 +83,10 @@ return function(board)
   end
 
   return {
-    each_block = each_block,
-    rotate = rotate,
-    move_x = move_x,
-    drop = drop,
-    draw = draw
+    each_block=each_block,
+    rotate=rotate,
+    move_x=move_x,
+    drop=drop,
+    draw=draw
   }
 end
