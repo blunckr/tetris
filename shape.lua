@@ -15,22 +15,24 @@ function Shape.new(board)
   return self
 end
 
-function Shape._each_block(self, fn, orientation, left, top)
+local function _blocks(self, orientation, left, top)
+  local blocks = {}
   for row_index, row in ipairs(self.shape[orientation]) do
     for column_index, column in ipairs(row) do
       if column == 1 then
         local x = column_index + left
         local y = row_index + top
-        fn(x, y)
+        blocks[#blocks + 1] = {x=x, y=y}
       end
     end
   end
+  return blocks
 end
 
-function Shape.each_block(self, fn, shape_params)
+function Shape.blocks(self, shape_params)
   shape_params = shape_params or {}
-  self:_each_block(
-    fn,
+  return _blocks(
+    self,
     shape_params.orientation or self.orientation,
     shape_params.left or self.left,
     shape_params.top or self.top
@@ -38,18 +40,17 @@ function Shape.each_block(self, fn, shape_params)
 end
 
 function Shape.next_position_valid(self, shape_params)
-  local valid = true
-  self:each_block(function(x, y)
+  for _, block in ipairs(self:blocks(shape_params)) do
     if
-      x < 1 or
-      x > #self.board.grid[1] or
-      y > #self.board.grid or
-      self.board.grid[y][x] == 1
+      block.x < 1 or
+      block.x > #self.board.grid[1] or
+      block.y > #self.board.grid or
+      self.board.grid[block.y][block.x] == 1
     then
-      valid = false
+      return false
     end
-  end, shape_params)
-  return valid
+  end
+  return true
 end
 
 function Shape.rotate(self, reverse)
@@ -81,14 +82,14 @@ function Shape.drop(self)
 end
 
 function Shape.draw(self)
-  self:each_block(function(x, y)
+  for _, block in ipairs(self:blocks()) do
     love.graphics.rectangle(
       'fill',
-      x * 10,
-      y * 10,
+      block.x * 10,
+      block.y * 10,
       9,
       9)
-  end)
+  end
 end
 
 return Shape
