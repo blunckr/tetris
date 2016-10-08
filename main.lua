@@ -4,7 +4,7 @@ local Board = require 'board'
 local board = Board()
 local drop_timer = 0
 
-local shape = Shape(board)
+local shape = Shape.new(board)
 
 function love.load()
   love.window.setMode(400, 520)
@@ -14,25 +14,25 @@ love.keyboard.setKeyRepeat(true)
 
 function love.keypressed(key)
   if key == 'up' then
-    shape.rotate()
+    shape:rotate()
   elseif key == 'down' then
-    shape.rotate(true)
+    shape:rotate(true)
   elseif key == 'left' then
-    shape.move_x(true)
+    shape:move_x(true)
   elseif key == 'right' then
-    shape.move_x()
+    shape:move_x()
   end
 end
 
 function love.update(dt)
   drop_timer = drop_timer + dt
   if drop_timer > .5 then
-    shape.drop()
+    shape:drop()
     drop_timer = 0
   end
 end
 
 function love.draw()
   board.draw()
-  shape.draw()
+  shape:draw()
 end
