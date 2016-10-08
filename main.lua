@@ -1,14 +1,8 @@
 local Shape = require 'shape'
+local Board = require 'board'
 
-local board = {}
+local board = Board()
 local drop_timer = 0
-
-for row = 1, 16 do
-  board[row] = {}
-  for column = 1, 10 do
-    board[row][column] = 0
-  end
-end
 
 local shape = Shape(board)
 
@@ -38,43 +32,7 @@ function love.update(dt)
   end
 end
 
-local function draw_current_shape()
-  shape.each_block(function(x, y)
-    love.graphics.rectangle(
-      'fill',
-      x * 10,
-      y * 10,
-      9,
-      9)
-  end)
-end
-
-local function draw_boundaries()
-  love.graphics.rectangle(
-    'line',
-    9,
-    9,
-    100,
-    160)
-end
-
-local function draw_board()
-  for row_index, row in ipairs(board) do
-    for column_index, column in ipairs(row) do
-      if column == 1 then
-        love.graphics.rectangle(
-          'fill',
-          (column_index - 1) * 10,
-          (row_index - 1) * 10,
-          9,
-          9)
-      end
-    end
-  end
-end
-
 function love.draw()
-  draw_boundaries()
-  draw_current_shape()
-  draw_board()
+  board.draw()
+  shape.draw()
 end

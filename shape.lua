@@ -31,7 +31,7 @@ return function(board)
   local function next_position_valid(shape_params)
     local valid = true
     each_block(function(x, y)
-      if x < 1 or x > #board[1] then
+      if x < 1 or x > #board.grid[1] or board.grid[y][x] == 1 then
         valid = false
       end
     end, shape_params)
@@ -58,10 +58,22 @@ return function(board)
     top = top + 1
   end
 
+  local function draw()
+    each_block(function(x, y)
+      love.graphics.rectangle(
+        'fill',
+        x * 10,
+        y * 10,
+        9,
+        9)
+    end)
+  end
+
   return {
     each_block = each_block,
     rotate = rotate,
     move_x = move_x,
     drop = drop,
+    draw = draw
   }
 end
