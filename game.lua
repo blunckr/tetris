@@ -31,7 +31,10 @@ end
 function Game.update(self, dt)
   self.drop_timer = self.drop_timer + dt
   if self.drop_timer > .5 then
-    self.shape:drop()
+    local settled = self.shape:drop()
+    if settled then
+      self:new_shape()
+    end
     self.drop_timer = 0
   end
 end

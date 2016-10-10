@@ -75,8 +75,10 @@ function Shape.drop(self)
   local next_top = self.top + 1
   if self:next_position_valid{top=next_top} then
     self.top = next_top
+    return false
   else
     self:settle()
+    return true
   end
 end
 
