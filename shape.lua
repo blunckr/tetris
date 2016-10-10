@@ -5,13 +5,11 @@ Shape.__index = Shape
 
 function Shape.new(board)
   local self = setmetatable({}, Shape)
-
   self.board = board
   self.shape = shapes[1]
   self.orientation = 1
   self.left = 0
   self.top = 0
-
   return self
 end
 

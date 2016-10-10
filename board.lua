@@ -3,7 +3,6 @@ Board.__index = Board
 
 function Board.new()
   local self = setmetatable({}, Board)
-
   self.width = 10
   self.height = 16
   self.grid = {}
@@ -13,7 +12,6 @@ function Board.new()
       self.grid[row][column] = 0
     end
   end
-
   return self
 end
 
