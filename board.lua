@@ -4,10 +4,12 @@ Board.__index = Board
 function Board.new()
   local self = setmetatable({}, Board)
 
+  self.width = 10
+  self.height = 16
   self.grid = {}
-  for row = 1, 16 do
+  for row = 1, self.height do
     self.grid[row] = {}
-    for column = 1, 10 do
+    for column = 1, self.width do
       self.grid[row][column] = 0
     end
   end
@@ -15,13 +17,24 @@ function Board.new()
   return self
 end
 
-function Board.draw_boundaries()
+function Board.block_is_valid(self, x, y)
+  return x >= 1 and
+    x <= self.width and
+    y <= self.height and
+    self.grid[y][x] == 0
+end
+
+function Board.eat(self, x, y)
+  self.grid[y][x] = 1
+end
+
+function Board.draw_boundaries(self)
   love.graphics.rectangle(
     'line',
     9,
     9,
-    100,
-    160)
+    self.width * 10,
+    self.height * 10)
 end
 
 function Board.draw_grid(self)
@@ -30,8 +43,8 @@ function Board.draw_grid(self)
       if column == 1 then
         love.graphics.rectangle(
           'fill',
-          (column_index - 1) * 10,
-          (row_index - 1) * 10,
+          column_index * 10,
+          row_index * 10,
           9,
           9)
       end

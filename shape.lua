@@ -41,12 +41,7 @@ end
 
 function Shape.next_position_valid(self, shape_params)
   for _, block in ipairs(self:blocks(shape_params)) do
-    if
-      block.x < 1 or
-      block.x > #self.board.grid[1] or
-      block.y > #self.board.grid or
-      self.board.grid[block.y][block.x] == 1
-    then
+    if not self.board:block_is_valid(block.x, block.y) then
       return false
     end
   end
@@ -72,12 +67,18 @@ function Shape.move_x(self, move_left)
   end
 end
 
+function Shape.settle(self)
+  for _, block in ipairs(self:blocks()) do
+    self.board:eat(block.x, block.y)
+  end
+end
+
 function Shape.drop(self)
   local next_top = self.top + 1
   if self:next_position_valid{top=next_top} then
     self.top = next_top
   else
-    self.board:eat()
+    self:settle()
   end
 end
 
