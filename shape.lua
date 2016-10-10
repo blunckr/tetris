@@ -3,9 +3,8 @@ local shapes = require 'shapes'
 local Shape = {}
 Shape.__index = Shape
 
-function Shape.new(board)
+function Shape.new()
   local self = setmetatable({}, Shape)
-  self.board = board
   self.shape = shapes[1]
   self.orientation = 1
   self.left = 0
@@ -37,48 +36,30 @@ function Shape.blocks(self, shape_params)
   )
 end
 
-function Shape.next_position_valid(self, shape_params)
-  for _, block in ipairs(self:blocks(shape_params)) do
-    if not self.board:block_is_valid(block.x, block.y) then
-      return false
-    end
-  end
-  return true
-end
-
-function Shape.rotate(self, reverse)
-  local next_orientation = self.orientation + (reverse and -1 or 1)
+function Shape.rotate(self, direction, validate)
+  local next_orientation = self.orientation +
+    (direction == 'reverse' and -1 or 1)
   if next_orientation > 4 then
     next_orientation = 1
   elseif next_orientation < 1 then
     next_orientation = 4
   end
-  if self:next_position_valid{orientation=next_orientation} then
+  if validate(self:blocks{orientation=next_orientation}) then
     self.orientation = next_orientation
   end
 end
 
-function Shape.move_x(self, move_left)
-  local next_left = self.left + (move_left and -1 or 1)
-  if self:next_position_valid{left=next_left} then
+function Shape.move_x(self, direction, validate)
+  local next_left = self.left + (direction == 'left' and -1 or 1)
+  if validate(self:blocks{left=next_left}) then
     self.left = next_left
   end
 end
 
-function Shape.settle(self)
-  for _, block in ipairs(self:blocks()) do
-    self.board:eat(block.x, block.y)
-  end
-end
-
-function Shape.drop(self)
+function Shape.drop(self, validate)
   local next_top = self.top + 1
-  if self:next_position_valid{top=next_top} then
+  if validate(self:blocks{top=next_top}) then
     self.top = next_top
-    return false
-  else
-    self:settle()
-    return true
   end
 end
 

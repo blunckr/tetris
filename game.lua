@@ -13,29 +13,36 @@ function Game.new()
 end
 
 function Game.new_shape(self)
-  self.shape = Shape.new(self.board)
+  self.shape = Shape.new()
 end
 
 function Game.keypressed(self, key)
+  local validate = function(next_shape)
+    return self.board:shape_is_valid(next_shape)
+  end
   if key == 'up' then
-    self.shape:rotate()
+    self.shape:rotate('forward', validate)
   elseif key == 'down' then
-    self.shape:rotate(true)
+    self.shape:rotate('reverse', validate)
   elseif key == 'left' then
-    self.shape:move_x(true)
+    self.shape:move_x('left', validate)
   elseif key == 'right' then
-    self.shape:move_x()
+    self.shape:move_x('right', validate)
   end
 end
 
 function Game.update(self, dt)
   self.drop_timer = self.drop_timer + dt
   if self.drop_timer > .5 then
-    local settled = self.shape:drop()
-    if settled then
-      self:new_shape()
-    end
     self.drop_timer = 0
+    self.shape:drop(function(next_shape)
+      local valid = self.board:shape_is_valid(next_shape)
+      if not valid then
+        self.board:eat_blocks(self.shape:blocks())
+        self:new_shape()
+      end
+      return valid
+    end)
   end
 end
 

@@ -15,15 +15,23 @@ function Board.new()
   return self
 end
 
-function Board.block_is_valid(self, x, y)
-  return x >= 1 and
-    x <= self.width and
-    y <= self.height and
-    self.grid[y][x] == 0
-end
+function Board.shape_is_valid(self, shape)
+  for _, block in ipairs(shape) do
+    if block.x < 1 or
+      block.x > self.width or
+      block.y > self.height or
+      self.grid[block.y][block.x] == 1
+    then
+      return false
+    end
+  end
+  return true
+ end
 
-function Board.eat(self, x, y)
-  self.grid[y][x] = 1
+function Board.eat_blocks(self, blocks)
+  for _, block in ipairs(blocks) do
+    self.grid[block.y][block.x] = 1
+  end
 end
 
 function Board.draw_boundaries(self)
