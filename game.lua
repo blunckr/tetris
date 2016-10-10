@@ -16,16 +16,21 @@ function Game.new_shape(self)
   self.shape = Shape.new()
 end
 
+function Game.check_complete_rows(self)
+  self.board:check_complete_rows()
+end
+
 function Game.drop_shape(self)
   local valid
   self.shape:drop(function(next_shape)
     valid = self.board:shape_is_valid(next_shape)
-    if not valid then
-      self.board:eat_blocks(self.shape:blocks())
-      self:new_shape()
-    end
-    return valid
+    return valid -- inform the shape
   end)
+  if not valid then
+    self.board:eat_blocks(self.shape:blocks())
+    self:check_complete_rows()
+    self:new_shape()
+  end
   return valid
 end
 

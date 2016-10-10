@@ -6,13 +6,17 @@ function Board.new()
   self.width = 10
   self.height = 16
   self.grid = {}
-  for row = 1, self.height do
-    self.grid[row] = {}
+  self:generate_empty_rows()
+ return self
+end
+
+function Board.generate_empty_rows(self)
+  while #self.grid < self.height do
+    table.insert(self.grid, 1, {})
     for column = 1, self.width do
-      self.grid[row][column] = 0
+      self.grid[1][column] = 0
     end
   end
-  return self
 end
 
 function Board.shape_is_valid(self, shape)
@@ -41,6 +45,32 @@ function Board.draw_boundaries(self)
     9,
     self.width * 10,
     self.height * 10)
+end
+
+local function row_is_complete(row)
+  for _, column in ipairs(row) do
+    if column == 0 then
+      return false
+    end
+  end
+  return true
+end
+
+function Board.check_complete_rows(self)
+  local complete_rows = {}
+  -- we want the list in reverse so things don't get messed up when removing
+  for row_index = #self.grid, 1, -1 do
+    local row = self.grid[row_index]
+    if row_is_complete(row) then
+      complete_rows[#complete_rows+1] = row_index
+    end
+  end
+
+  for _, row_index in ipairs(complete_rows) do
+    table.remove(self.grid, row_index)
+  end
+
+  self:generate_empty_rows()
 end
 
 function Board.draw_grid(self)
