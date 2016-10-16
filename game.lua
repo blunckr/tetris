@@ -1,5 +1,6 @@
 local Board = require 'board'
 local Shape = require 'shape'
+local shapes = require 'shapes'
 
 local Game = {}
 Game.__index = Game
@@ -13,7 +14,8 @@ function Game.new()
 end
 
 function Game.new_shape(self)
-  self.shape = Shape.new()
+  local shape = shapes[math.random(#shapes)]
+  self.shape = Shape.new(shape)
 end
 
 function Game.check_complete_rows(self)

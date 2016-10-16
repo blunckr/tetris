@@ -1,11 +1,9 @@
-local shapes = require 'shapes'
-
 local Shape = {}
 Shape.__index = Shape
 
-function Shape.new()
+function Shape.new(shape)
   local self = setmetatable({}, Shape)
-  self.shape = shapes[1]
+  self.shape = shape
   self.orientation = 1
   self.left = 0
   self.top = 0
