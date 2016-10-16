@@ -16,6 +16,9 @@ end
 function Game.new_shape(self)
   local shape = shapes[math.random(#shapes)]
   self.shape = Shape.new(shape)
+  if not self.board:shape_is_valid(self.shape:blocks()) then
+    die()
+  end
 end
 
 function Game.check_complete_rows(self)
