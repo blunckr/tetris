@@ -71,6 +71,7 @@ function Board.check_complete_rows(self)
   end
 
   self:generate_empty_rows()
+  return #complete_rows -- to score
 end
 
 function Board.draw_grid(self)

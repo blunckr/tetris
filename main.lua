@@ -5,7 +5,9 @@ local game
 local paused = false
 
 local function update_score(new_score)
-  high_score = new_score
+  if new_score > high_score then
+    high_score = new_score
+  end
 end
 
 local function new_game()
@@ -35,5 +37,5 @@ function love.update(dt)
 end
 
 function love.draw()
-  game:draw()
+  game:draw(high_score)
 end

@@ -5,10 +5,12 @@ local shapes = require 'shapes'
 local Game = {}
 Game.__index = Game
 
-function Game.new()
+function Game.new(update_score)
   local self = setmetatable({}, Game)
   self.board = Board.new()
   self.drop_timer = 0
+  self.score = 0
+  self.update_score = update_score
   self:new_shape()
   return self
 end
@@ -22,7 +24,9 @@ function Game.new_shape(self)
 end
 
 function Game.check_complete_rows(self)
-  self.board:check_complete_rows()
+  local complete = self.board:check_complete_rows()
+  self.score = self.score + complete * 100
+  self.update_score(self.score)
 end
 
 function Game.drop_shape(self)
@@ -71,9 +75,19 @@ function Game.update(self, dt)
   end
 end
 
-function Game.draw(self)
+function Game.draw(self, high_score)
   self.board:draw()
   self.shape:draw()
+  love.graphics.print(
+    'score: '..self.score,
+    10, -- x
+    180 -- y
+  )
+  love.graphics.print(
+    'score: '..high_score,
+    10,
+    200
+  )
 end
 
 return Game
