@@ -5,12 +5,13 @@ local shapes = require 'shapes'
 local Game = {}
 Game.__index = Game
 
-function Game.new(update_score)
+function Game.new(update_score, die)
   local self = setmetatable({}, Game)
   self.board = Board.new()
   self.drop_timer = 0
   self.score = 0
   self.update_score = update_score
+  self.die = die
   self:new_shape()
   return self
 end
@@ -19,7 +20,7 @@ function Game.new_shape(self)
   local shape = shapes[math.random(#shapes)]
   self.shape = Shape.new(shape)
   if not self.board:shape_is_valid(self.shape:blocks()) then
-    die()
+    self.die()
   end
 end
 
@@ -75,9 +76,14 @@ function Game.update(self, dt)
   end
 end
 
-function Game.draw(self, high_score)
+function Game.draw(self, message, high_score)
   self.board:draw()
   self.shape:draw()
+  love.graphics.print(
+    message,
+    10,
+    10
+  )
   love.graphics.print(
     'score: '..self.score,
     10, -- x
